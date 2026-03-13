@@ -10,161 +10,393 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-        /* --- VARIABLES GLOBALES (Azul Marino y Dorado) --- */
         :root {
-            --bg-navy-deep: #020b18; /* Azul marino ultra profundo */
-            --bg-navy-light: #061730; /* Azul marino para brillos */
-            --card-bg: rgba(6, 23, 48, 0.4);
-            --card-border: rgba(212, 175, 55, 0.15); /* Borde dorado sutil */
-            --text-primary: #ffffff;
-            --text-secondary: #94a3b8;
-            --accent-gold: #D4AF37;
-            --accent-gold-light: #FCEEBC;
-            --glow-gold: rgba(212, 175, 55, 0.15);
-            --font-family: 'Inter', -apple-system, sans-serif;
-            --ease: cubic-bezier(0.25, 1, 0.5, 1);
+            --bg-dark: #020617; /* Very dark blue, almost black */
+            --bg-card: rgba(15, 23, 42, 0.6);
+            --border-card: rgba(255, 255, 255, 0.08);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-blue: #3b82f6;
+            --accent-blue-glow: rgba(59, 130, 246, 0.5);
+            --accent-gold: #fbbf24;
+            --accent-gold-glow: rgba(251, 191, 36, 0.5);
+            --font-main: 'Inter', sans-serif;
         }
 
-        /* --- RESET Y PREVENCIÓN DE SCROLL HORIZONTAL --- */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        html { 
-            scroll-behavior: smooth; 
-            width: 100%;
-            overflow-x: hidden; /* Fundamental para evitar scroll lateral */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        body {
-            background-color: var(--bg-navy-deep);
-            background-image: radial-gradient(circle at 50% 0%, var(--bg-navy-light) 0%, var(--bg-navy-deep) 70%);
-            color: var(--text-primary);
-            font-family: var(--font-family);
-            line-height: 1.5;
+        body, html {
             width: 100%;
+            height: 100%;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: var(--font-main);
             overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
+            scroll-behavior: smooth;
+        }
+
+        /* Canvas for immersive background */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        /* Ambient glow in the background */
+        .ambient-glow {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80vw;
+            height: 80vw;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(29, 78, 216, 0.15) 0%, rgba(2, 6, 23, 0) 70%);
+            z-index: -1;
+            pointer-events: none;
         }
 
         .container {
-            width: 100%;
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 24px;
+            position: relative;
+            z-index: 10;
         }
 
-        h1, h2, h3 { font-weight: 600; letter-spacing: -0.02em; }
-        
-        /* Efecto Metálico para Texto */
+        /* Typography */
+        h1, h2, h3 {
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+
         .gradient-gold {
-            background: linear-gradient(135deg, var(--accent-gold-light) 0%, var(--accent-gold) 40%, #997A15 100%);
+            background: linear-gradient(135deg, #fde68a 0%, #fbbf24 50%, #d97706 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
 
-        /* --- BOTONES --- */
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 14px 28px;
-            border-radius: 30px;
-            font-size: 16px;
-            font-weight: 500;
-            text-decoration: none;
-            transition: all 0.3s var(--ease);
-            cursor: pointer;
-            border: 1px solid transparent;
-            position: relative;
-            overflow: hidden;
+        .gradient-blue {
+            background: linear-gradient(135deg, #93c5fd 0%, #3b82f6 50%, #2563eb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
-        .btn-primary {
-            background: linear-gradient(135deg, var(--accent-gold) 0%, #B38728 100%);
-            color: var(--bg-navy-deep);
-            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4);
-            color: #000;
-        }
-
-        .btn-outline {
-            background-color: transparent;
-            color: var(--text-primary);
-            border-color: rgba(255,255,255,0.2);
-            backdrop-filter: blur(10px);
-        }
-
-        .btn-outline:hover { 
-            background-color: rgba(255,255,255,0.05); 
-            border-color: var(--accent-gold); 
-            color: var(--accent-gold-light);
-        }
-
-        /* --- NAVEGACIÓN INTELIGENTE --- */
+        /* Header */
         header {
             position: fixed;
-            top: 0; left: 0; width: 100%;
-            height: 70px;
-            background: transparent;
-            transition: background 0.4s var(--ease), backdrop-filter 0.4s;
-            z-index: 1000;
-            display: flex;
-            align-items: center;
+            top: 0;
+            width: 100%;
+            padding: 20px 0;
+            z-index: 100;
+            transition: all 0.3s ease;
             border-bottom: 1px solid transparent;
         }
 
         header.scrolled {
-            background: rgba(2, 11, 24, 0.8);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            background: rgba(2, 6, 23, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-card);
         }
 
-        nav {
-            width: 100%;
+        .header-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .logo { font-size: 22px; font-weight: 700; color: #fff; text-decoration: none; letter-spacing: -0.5px;}
-        .logo span { color: var(--accent-gold); }
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #fff;
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
 
-        /* --- HERO SECTION --- */
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 24px;
+            border-radius: 9999px;
+            font-size: 15px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid transparent;
+        }
+
+        .btn-primary {
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-primary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.2);
+        }
+
+        .btn-primary.gold-accent:hover {
+            box-shadow: 0 8px 25px rgba(251, 191, 36, 0.2);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px solid rgba(148, 163, 184, 0.3);
+        }
+
+        .btn-outline:hover {
+            color: #fff;
+            border-color: #fff;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Hero */
         .hero {
+            position: relative;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
-            position: relative;
-            padding-top: 70px;
+            padding-top: 80px;
         }
 
-        /* Brillo de fondo controlado para no hacer overflow */
-        .hero::before {
+        .hero h1 {
+            font-size: clamp(40px, 6vw, 76px);
+            line-height: 1.1;
+            margin-bottom: 24px;
+            text-shadow: 0 0 40px rgba(59, 130, 246, 0.3);
+        }
+
+        .hero p {
+            font-size: clamp(16px, 2vw, 20px);
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto 40px;
+            line-height: 1.6;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* Cards - Modern Tech Design */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: 24px;
+            padding: 40px;
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+        }
+
+        .card::before {
             content: '';
             position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 80vw;
-            height: 80vw;
-            max-width: 800px;
-            max-height: 800px;
-            background: radial-gradient(circle, var(--glow-gold) 0%, transparent 60%);
-            z-index: -1;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(800px circle at var(--mouse-x) var(--mouse-y), rgba(59, 130, 246, 0.15), transparent 40%);
+            z-index: 0;
+            opacity: 0;
+            transition: opacity 0.5s;
             pointer-events: none;
         }
 
-        .hero h1 { font-size: clamp(40px, 6vw, 76px); line-height: 1.05; margin-bottom: 24px; }
-        .hero p { font-size: clamp(18px, 2vw, 24px); color: var(--text-secondary); max-width: 650px; margin: 0 auto 40px; }
-        .hero-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+        .card:hover::before {
+            opacity: 1;
+        }
 
-        /* Indicador intuitivo de Scroll */
+        .card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(59, 130, 246, 0.4);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(59, 130, 246, 0.2), inset 0 1px 0 rgba(255,255,255,0.2);
+        }
+
+        /* Inner mesh gradient for cards like the reference */
+        .card-mesh {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 60%;
+            background: radial-gradient(ellipse at bottom, rgba(59, 130, 246, 0.3) 0%, rgba(139, 92, 246, 0.1) 50%, transparent 100%);
+            z-index: 0;
+            pointer-events: none;
+            border-radius: 0 0 24px 24px;
+        }
+
+        .card-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Sections */
+        .section-padding {
+            padding: 120px 0;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 64px;
+        }
+
+        .section-header h2 {
+            font-size: clamp(32px, 4vw, 48px);
+            margin-bottom: 16px;
+        }
+
+        .section-header p {
+            color: var(--text-muted);
+            font-size: 18px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Grid */
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .bento-grid.cols-2 {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .card h3 {
+            font-size: 22px;
+            margin-bottom: 16px;
+            color: #fff;
+        }
+
+        .card p {
+            color: var(--text-muted);
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        /* Icons */
+        .icon-container {
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.02));
+            border: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.2);
+            color: #60a5fa;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover .icon-container {
+            transform: scale(1.1);
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.05));
+            border-color: rgba(59, 130, 246, 0.4);
+            color: #93c5fd;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.3), inset 0 1px 0 rgba(255,255,255,0.3);
+        }
+
+        .icon-container svg {
+            width: 24px;
+            height: 24px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 1.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* ALTA Section */
+        .acronym-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 64px;
+            align-items: center;
+        }
+
+        .acronym-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .acronym-card {
+            background: rgba(15, 23, 42, 0.4);
+            border: 1px solid var(--border-card);
+            padding: 24px 32px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            transition: all 0.4s ease;
+            backdrop-filter: blur(12px);
+        }
+
+        .acronym-card:hover {
+            background: rgba(30, 41, 59, 0.6);
+            border-color: rgba(251, 191, 36, 0.4);
+            transform: translateX(10px);
+            box-shadow: -5px 5px 20px rgba(0,0,0,0.4), 0 0 15px rgba(251, 191, 36, 0.1);
+        }
+
+        .acronym-letter {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--accent-gold);
+            text-shadow: 0 0 20px rgba(251, 191, 36, 0.4);
+        }
+
+        .acronym-text {
+            font-size: 20px;
+            font-weight: 500;
+            color: #fff;
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--border-card);
+            padding: 60px 0;
+            text-align: center;
+            background: rgba(2, 6, 23, 0.8);
+            backdrop-filter: blur(20px);
+        }
+
+        /* Scroll indicator */
         .scroll-indicator {
             position: absolute;
             bottom: 40px;
@@ -174,169 +406,162 @@
             flex-direction: column;
             align-items: center;
             gap: 8px;
-            opacity: 0.6;
-            animation: bounce 2s infinite var(--ease);
+            opacity: 0.5;
+            animation: bounce 2s infinite;
         }
 
-        .scroll-indicator span { font-size: 12px; text-transform: uppercase; letter-spacing: 2px; color: var(--text-secondary); }
-        .mouse { width: 24px; height: 36px; border: 2px solid var(--text-secondary); border-radius: 12px; position: relative; }
-        .wheel { width: 4px; height: 6px; background: var(--accent-gold); border-radius: 2px; position: absolute; top: 6px; left: 50%; transform: translateX(-50%); animation: scroll 1.5s infinite; }
-
-        @keyframes bounce { 0%, 20%, 50%, 80%, 100% { transform: translateY(0) translateX(-50%); } 40% { transform: translateY(-10px) translateX(-50%); } 60% { transform: translateY(-5px) translateX(-50%); } }
-        @keyframes scroll { 0% { top: 6px; opacity: 1; } 100% { top: 18px; opacity: 0; } }
-
-        /* --- TARJETAS PREMIUM Y EFECTO GLOW INTELIGENTE --- */
-        .card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 24px;
-            padding: 40px;
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            transition: transform 0.4s var(--ease), border-color 0.4s var(--ease), box-shadow 0.4s var(--ease);
+        .mouse {
+            width: 22px;
+            height: 34px;
+            border: 2px solid var(--text-muted);
+            border-radius: 12px;
             position: relative;
-            overflow: hidden;
+        }
+
+        .wheel {
+            width: 2px;
+            height: 6px;
+            background: var(--text-muted);
+            border-radius: 2px;
+            position: absolute;
+            top: 6px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: scroll 1.5s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0) translateX(-50%); }
+            40% { transform: translateY(-10px) translateX(-50%); }
+            60% { transform: translateY(-5px) translateX(-50%); }
+        }
+
+        @keyframes scroll {
+            0% { top: 6px; opacity: 1; }
+            100% { top: 16px; opacity: 0; }
+        }
+
+        /* --- IMMERSIVE RIPPLE EFFECT --- */
+        .ripple-effect {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%) scale(0);
+            z-index: 9999;
+            animation: ripple-animation 1s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+            /* Blue and Gold gradients */
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.8) 0%, rgba(251, 191, 36, 0.6) 40%, transparent 70%);
+            mix-blend-mode: screen;
+        }
+
+        .ripple-ring {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%) scale(0);
+            z-index: 9998;
+            border: 2px solid rgba(251, 191, 36, 0.8);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.8), inset 0 0 20px rgba(59, 130, 246, 0.8);
+            animation: ripple-ring-animation 1.2s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+        }
+
+        @keyframes ripple-animation {
+            0% { transform: translate(-50%, -50%) scale(0); opacity: 0.8; }
+            100% { transform: translate(-50%, -50%) scale(5); opacity: 0; }
+        }
+
+        @keyframes ripple-ring-animation {
+            0% { transform: translate(-50%, -50%) scale(0); opacity: 1; border-width: 4px; }
+            100% { transform: translate(-50%, -50%) scale(6); opacity: 0; border-width: 0px; }
+        }
+
+        /* Reveal animations */
+        .reveal-item {
             opacity: 0;
             transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(212, 175, 55, 0.5);
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        .reveal-item.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
-        .card::before {
-            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(212, 175, 55, 0.08), transparent 40%);
-            z-index: 0; pointer-events: none; opacity: 0; transition: opacity 0.4s;
-        }
-        .card:hover::before { opacity: 1; }
-        .card > * { position: relative; z-index: 1; }
-
-        /* --- SECCIONES COMUNES --- */
-        .section-padding { padding: 120px 0; }
-        .section-header { text-align: center; margin-bottom: 64px; }
-        .section-header h2 { font-size: clamp(32px, 4vw, 48px); margin-bottom: 16px; }
-        .section-header p { color: var(--text-secondary); font-size: 20px; max-width: 700px; margin: 0 auto; }
-
-        /* --- BENTO GRID ECOSISTEMA --- */
-        .bento-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 24px;
-        }
-
-        .bento-item { display: flex; flex-direction: column; justify-content: flex-start; min-height: 300px; }
-        .bento-item h3 { font-size: 26px; margin-bottom: 16px; color: #fff; }
-        .bento-item p { color: var(--text-secondary); font-size: 16px; line-height: 1.6; }
-        
-        .bento-icon {
-            width: 56px; height: 56px;
-            background: rgba(212, 175, 55, 0.05);
-            border: 1px solid rgba(212, 175, 55, 0.2);
-            border-radius: 16px;
-            margin-bottom: 24px;
-            display: flex; align-items: center; justify-content: center;
-            color: var(--accent-gold);
-            transition: transform 0.3s var(--ease);
-        }
-
-        .card:hover .bento-icon { transform: scale(1.1) rotate(5deg); background: rgba(212, 175, 55, 0.1); }
-
-        /* Iconos SVG Inline para mayor velocidad y elegancia */
-        .icon-svg { width: 28px; height: 28px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
-
-        /* --- SECCIÓN: ACRÓNIMO A.L.T.A --- */
-        .acronym-layout {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 64px;
-            align-items: center;
-        }
-
-        .acronym-cards { display: flex; flex-direction: column; gap: 16px; }
-        
-        .acronym-card {
-            background: rgba(6, 23, 48, 0.6); 
-            border: 1px solid rgba(255,255,255,0.05);
-            padding: 24px 32px; 
-            border-radius: 20px; 
-            display: flex; align-items: center; gap: 24px;
-            transition: all 0.4s var(--ease);
-        }
-        .acronym-card:hover { 
-            background: var(--card-bg); 
-            border-color: var(--accent-gold); 
-            transform: translateX(15px); 
-            box-shadow: -5px 5px 20px rgba(0,0,0,0.3);
-        }
-        .acronym-letter { font-size: 40px; font-weight: 700; color: var(--accent-gold); text-shadow: 0 0 15px rgba(212, 175, 55, 0.3); }
-        .acronym-text { font-size: 22px; font-weight: 500; color: #fff;}
-
-        /* --- FOOTER --- */
-        footer {
-            border-top: 1px solid rgba(255,255,255,0.05);
-            padding: 60px 0; text-align: center; color: var(--text-secondary);
-            background-color: #010710;
-        }
-
-        /* --- RESPONSIVE MOBILE --- */
         @media (max-width: 768px) {
             .section-padding { padding: 80px 0; }
+            .bento-grid.cols-2 { grid-template-columns: 1fr; }
+            .acronym-layout { grid-template-columns: 1fr; gap: 40px; }
             .hero-buttons { flex-direction: column; width: 100%; }
             .hero-buttons .btn { width: 100%; }
-            .bento-grid { grid-template-columns: 1fr; }
-            .acronym-layout { grid-template-columns: 1fr; gap: 40px; text-align: center; }
-            .acronym-card { justify-content: center; }
-            .acronym-card:hover { transform: translateY(-5px); /* Movimiento vertical en móvil */ }
-            .scroll-indicator { display: none; /* Ocultar en móvil para ahorrar espacio */ }
+            .scroll-indicator { display: none; }
         }
     </style>
 </head>
 <body>
 
+    <!-- Immersive Background -->
+    <canvas id="bg-canvas"></canvas>
+    <div class="ambient-glow"></div>
+
     <header id="main-header">
-        <div class="container" style="display: flex; justify-content: space-between; width: 100%;">
+        <div class="container header-content">
             <a href="#" class="logo">ALTA<span class="gradient-gold">57</span></a>
-            <a href="#ecosistema" class="btn btn-primary" style="padding: 8px 20px; font-size: 14px; border-radius: 8px;">Unirse</a>
+            <a href="#ecosistema" class="btn btn-primary" style="padding: 8px 20px; font-size: 14px;">Unirse</a>
         </div>
     </header>
 
     <section class="hero">
         <div class="container">
             <h1 class="reveal-item">Tu marca privada.<br><span class="gradient-gold">En piloto automático.</span></h1>
-            <p class="reveal-item">El ecosistema de IA que predice, diseña, vende y automatiza tu negocio de e-commerce. Desde Colombia para el mundo.</p>
-            <div class="hero-buttons reveal-item">
+            <p class="reveal-item" style="transition-delay: 100ms;">El ecosistema de IA que predice, diseña, vende y automatiza tu negocio de e-commerce. Desde Colombia para el mundo.</p>
+            <div class="hero-buttons reveal-item" style="transition-delay: 200ms;">
                 <a href="#ecosistema" class="btn btn-primary">Descubrir el Ecosistema</a>
                 <a href="#filosofia" class="btn btn-outline">Ver Metodología</a>
             </div>
         </div>
         
-        <div class="scroll-indicator">
+        <div class="scroll-indicator reveal-item" style="transition-delay: 400ms;">
             <div class="mouse"><div class="wheel"></div></div>
-            <span>Explorar</span>
+            <span style="font-size: 11px; letter-spacing: 2px; text-transform: uppercase;">Explorar</span>
         </div>
     </section>
 
     <section id="filosofia" class="section-padding">
         <div class="container">
             <div class="section-header reveal-item">
-                <h2>Un estándar de <span class="gradient-gold">ingeniería premium.</span></h2>
+                <h2>Un estándar de <span class="gradient-blue">ingeniería premium.</span></h2>
                 <p>La filosofía detrás de cada línea de código de ALTA57. Transformamos lo complejo en elegancia absoluta.</p>
             </div>
-            <div class="bento-grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
-                <div class="card reveal-card">
-                    <h3 class="gradient-gold" style="font-size: 24px; margin-bottom: 12px;">Alta Tecnología</h3>
-                    <p>Núcleo de Inteligencia Artificial predictiva que localiza productos ganadores y gestiona la operatividad de tu tienda 24/7 sin descanso.</p>
+            <div class="bento-grid">
+                <div class="card reveal-item" style="transition-delay: 0ms;">
+                    <div class="card-mesh"></div>
+                    <div class="card-content">
+                        <div class="icon-container">
+                            <svg viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        </div>
+                        <h3>Alta Tecnología</h3>
+                        <p>Núcleo de Inteligencia Artificial predictiva que localiza productos ganadores y gestiona la operatividad de tu tienda 24/7 sin descanso.</p>
+                    </div>
                 </div>
-                <div class="card reveal-card">
-                    <h3 class="gradient-gold" style="font-size: 24px; margin-bottom: 12px;">Alta Costura</h3>
-                    <p>Páginas de ventas diseñadas a medida por algoritmos. Estética visual premium y textos persuasivos orientados directamente a la conversión.</p>
+                <div class="card reveal-item" style="transition-delay: 100ms;">
+                    <div class="card-mesh"></div>
+                    <div class="card-content">
+                        <div class="icon-container">
+                            <svg viewBox="0 0 24 24"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        </div>
+                        <h3>Alta Costura</h3>
+                        <p>Páginas de ventas diseñadas a medida por algoritmos. Estética visual premium y textos persuasivos orientados directamente a la conversión.</p>
+                    </div>
                 </div>
-                <div class="card reveal-card">
-                    <h3 class="gradient-gold" style="font-size: 24px; margin-bottom: 12px;">Alta Calidad</h3>
-                    <p>Curaduría automatizada de proveedores de primer nivel y un sistema de atención post-venta diseñado para fidelizar a cada comprador.</p>
+                <div class="card reveal-item" style="transition-delay: 200ms;">
+                    <div class="card-mesh"></div>
+                    <div class="card-content">
+                        <div class="icon-container">
+                            <svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path></svg>
+                        </div>
+                        <h3>Alta Calidad</h3>
+                        <p>Curaduría automatizada de proveedores de primer nivel y un sistema de atención post-venta diseñado para fidelizar a cada comprador.</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -348,70 +573,76 @@
                 <h2>El flujo de trabajo <span class="gradient-gold">autónomo.</span></h2>
                 <p>Cuatro fases impulsadas por IA. Cero fricción operativa para ti.</p>
             </div>
-            <div class="bento-grid">
-                <div class="card bento-item reveal-card">
-                    <div>
-                        <div class="bento-icon">
-                            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path></svg>
+            <div class="bento-grid cols-2">
+                <div class="card reveal-item" style="transition-delay: 0ms;">
+                    <div class="card-mesh"></div>
+                    <div class="card-content">
+                        <div class="icon-container" style="color: #fbbf24;">
+                            <svg viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path></svg>
                         </div>
                         <h3>IA Predictiva & Búsqueda</h3>
+                        <p>Analizamos millones de datos del mercado global para identificar tendencias emergentes y localizar productos con alta demanda y baja competencia antes que el resto.</p>
                     </div>
-                    <p>Analizamos millones de datos del mercado global para identificar tendencias emergentes y localizar productos con alta demanda y baja competencia antes que el resto.</p>
                 </div>
-                <div class="card bento-item reveal-card">
-                    <div>
-                        <div class="bento-icon">
-                            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                <div class="card reveal-item" style="transition-delay: 100ms;">
+                    <div class="card-mesh"></div>
+                    <div class="card-content">
+                        <div class="icon-container" style="color: #a78bfa;">
+                            <svg viewBox="0 0 24 24"><path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
                         </div>
                         <h3>Creación de Activos</h3>
+                        <p>Generación automática de tu tienda online, creación de imágenes fotorrealistas y redacción de copy persuasivo listo para lanzar campañas en minutos.</p>
                     </div>
-                    <p>Generación automática de tu tienda online, creación de imágenes fotorrealistas y redacción de copy persuasivo listo para lanzar campañas en minutos.</p>
                 </div>
-                <div class="card bento-item reveal-card">
-                    <div>
-                        <div class="bento-icon">
-                            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                <div class="card reveal-item" style="transition-delay: 200ms;">
+                    <div class="card-mesh"></div>
+                    <div class="card-content">
+                        <div class="icon-container" style="color: #34d399;">
+                            <svg viewBox="0 0 24 24"><path d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
                         </div>
                         <h3>Ventas & Escalado</h3>
+                        <p>Optimización inteligente del tráfico mediante algoritmos que leen el comportamiento del usuario y procesan pagos sin fisuras para maximizar la conversión.</p>
                     </div>
-                    <p>Optimización inteligente del tráfico mediante algoritmos que leen el comportamiento del usuario y procesan pagos sin fisuras para maximizar la conversión.</p>
                 </div>
-                <div class="card bento-item reveal-card">
-                    <div>
-                        <div class="bento-icon">
-                            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                <div class="card reveal-item" style="transition-delay: 300ms;">
+                    <div class="card-mesh"></div>
+                    <div class="card-content">
+                        <div class="icon-container" style="color: #f472b6;">
+                            <svg viewBox="0 0 24 24"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
                         </div>
                         <h3>Post-Venta & Fidelidad</h3>
+                        <p>Gestión automatizada de logística, atención al cliente multilingüe mediante IA conversacional y recopilación estratégica de reseñas para consolidar la marca.</p>
                     </div>
-                    <p>Gestión automatizada de logística, atención al cliente multilingüe mediante IA conversacional y recopilación estratégica de reseñas para consolidar la marca.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="section-padding" style="background: rgba(0,0,0,0.2);">
+    <section class="section-padding" style="position: relative;">
+        <!-- Background subtle glow specifically for ALTA section -->
+        <div style="position: absolute; top: 50%; right: 0; width: 50vw; height: 50vw; transform: translateY(-50%); background: radial-gradient(circle, rgba(251, 191, 36, 0.08) 0%, transparent 60%); z-index: -1; pointer-events: none; border-radius: 50%;"></div>
+
         <div class="container acronym-layout">
             <div class="reveal-item">
-                <p style="color: var(--accent-gold); font-weight: 600; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 2px; font-size: 14px;">Algoritmo Propietario</p>
-                <h2 style="font-size: clamp(40px, 5vw, 56px); margin-bottom: 24px;">El Motor <span class="gradient-gold">A.L.T.A.</span></h2>
-                <p style="color: var(--text-secondary); font-size: 18px; line-height: 1.8;">Detrás de la interfaz intuitiva de ALTA57 opera nuestro código de procesamiento masivo. Un sistema que define, ejecuta y optimiza el ciclo de vida perfecto de tu producto e-commerce.</p>
-                <br>
-                <a href="#" class="btn btn-outline">Solicitar Demo Técnica</a>
+                <p style="color: var(--accent-gold); font-weight: 600; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 2px; font-size: 13px;">Algoritmo Propietario</p>
+                <h2 style="font-size: clamp(40px, 5vw, 56px); margin-bottom: 24px; line-height: 1.1;">El Motor <span class="gradient-gold">A.L.T.A.</span></h2>
+                <p style="color: var(--text-muted); font-size: 18px; line-height: 1.7; margin-bottom: 32px;">Detrás de la interfaz intuitiva de ALTA57 opera nuestro código de procesamiento masivo. Un sistema que define, ejecuta y optimiza el ciclo de vida perfecto de tu producto e-commerce.</p>
+                <a href="#" class="btn btn-primary gold-accent">Solicitar Demo Técnica</a>
             </div>
             <div class="acronym-cards">
-                <div class="acronym-card reveal-card">
+                <div class="acronym-card reveal-item" style="transition-delay: 0ms;">
                     <div class="acronym-letter">A</div>
                     <div class="acronym-text">Algoritmos de</div>
                 </div>
-                <div class="acronym-card reveal-card">
+                <div class="acronym-card reveal-item" style="transition-delay: 100ms;">
                     <div class="acronym-letter">L</div>
                     <div class="acronym-text">Localización y</div>
                 </div>
-                <div class="acronym-card reveal-card">
+                <div class="acronym-card reveal-item" style="transition-delay: 200ms;">
                     <div class="acronym-letter">T</div>
                     <div class="acronym-text">Tendencias</div>
                 </div>
-                <div class="acronym-card reveal-card">
+                <div class="acronym-card reveal-item" style="transition-delay: 300ms;">
                     <div class="acronym-letter">A</div>
                     <div class="acronym-text">Avanzadas</div>
                 </div>
@@ -421,16 +652,16 @@
 
     <footer>
         <div class="container">
-            <h2 class="gradient-gold" style="font-size: 32px; margin-bottom: 20px;">¿Listo para delegar a la IA?</h2>
-            <p style="margin-bottom: 40px;">Únete a la lista de espera exclusiva de ALTA57.</p>
-            <p style="font-size: 14px; opacity: 0.5;">&copy; 2026 ALTA57. Creado con tecnología e ingenio en Colombia.</p>
+            <h2 class="gradient-blue" style="font-size: clamp(24px, 3vw, 32px); margin-bottom: 16px;">¿Listo para delegar a la IA?</h2>
+            <p style="margin-bottom: 40px; color: var(--text-muted);">Únete a la lista de espera exclusiva de ALTA57.</p>
+            <p style="font-size: 13px; color: rgba(148, 163, 184, 0.6);">&copy; 2026 ALTA57. Creado con tecnología e ingenio en Colombia.</p>
         </div>
     </footer>
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             
-            // 1. Header Inteligente (Blur al hacer scroll)
+            // 1. Header background on scroll
             const header = document.getElementById('main-header');
             window.addEventListener('scroll', () => {
                 if (window.scrollY > 50) {
@@ -440,45 +671,27 @@
                 }
             });
 
-            // 2. Animaciones Suaves de Entrada (Intersection Observer)
+            // 2. Intersection Observer for reveal animations
             const observerOptions = {
                 root: null,
                 rootMargin: '0px',
-                threshold: 0.15 
+                threshold: 0.1
             };
 
             const observer = new IntersectionObserver((entries, observer) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
-                        entry.target.style.opacity = '1';
-                        entry.target.style.transform = 'translateY(0) translateX(0)';
+                        entry.target.classList.add('visible');
                         observer.unobserve(entry.target);
                     }
                 });
             }, observerOptions);
 
-            const revealElements = document.querySelectorAll('.reveal-card, .section-header.reveal-item, .acronym-layout > div.reveal-item, .hero .reveal-item');
-            
-            revealElements.forEach((el, index) => {
-                el.style.opacity = '0';
-                
-                // Si es un elemento del Hero, animar inmediatamente con delay
-                if(el.closest('.hero')) {
-                    el.style.transform = 'translateY(20px)';
-                    el.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
-                    setTimeout(() => {
-                        el.style.opacity = '1';
-                        el.style.transform = 'translateY(0)';
-                    }, 100 + (index * 200));
-                } else {
-                    // Si es de otra sección, esperar al scroll
-                    el.style.transform = 'translateY(40px)';
-                    el.style.transition = 'opacity 0.7s var(--ease), transform 0.7s var(--ease)';
-                    observer.observe(el);
-                }
+            document.querySelectorAll('.reveal-item').forEach((el) => {
+                observer.observe(el);
             });
 
-            // 3. Efecto Glow Dinámico en Tarjetas (Rastreo del Ratón)
+            // 3. Dynamic Glow Effect on Cards
             document.querySelectorAll('.card').forEach(card => {
                 card.addEventListener('mousemove', e => {
                     const rect = card.getBoundingClientRect();
@@ -488,6 +701,135 @@
                     card.style.setProperty('--mouse-y', `${y}px`);
                 });
             });
+
+            // 4. Immersive Ripple Effect on Click/Touch (Onda de colores azules y dorados)
+            const createRipple = (e) => {
+                // Determine coordinates (support touch and mouse)
+                let clientX = e.clientX;
+                let clientY = e.clientY;
+
+                if (e.type === 'touchstart') {
+                    clientX = e.touches[0].clientX;
+                    clientY = e.touches[0].clientY;
+                }
+
+                // Create the ripple body
+                const ripple = document.createElement('div');
+                ripple.className = 'ripple-effect';
+
+                // Create an outer ring for more tech feel
+                const ring = document.createElement('div');
+                ring.className = 'ripple-ring';
+
+                // Base size based on viewport
+                const size = Math.max(window.innerWidth, window.innerHeight) * 0.4;
+
+                ripple.style.width = `${size}px`;
+                ripple.style.height = `${size}px`;
+                ripple.style.left = `${clientX}px`;
+                ripple.style.top = `${clientY}px`;
+
+                ring.style.width = `${size * 0.8}px`;
+                ring.style.height = `${size * 0.8}px`;
+                ring.style.left = `${clientX}px`;
+                ring.style.top = `${clientY}px`;
+
+                document.body.appendChild(ripple);
+                document.body.appendChild(ring);
+
+                // Remove elements after animation
+                setTimeout(() => {
+                    ripple.remove();
+                    ring.remove();
+                }, 1200);
+            };
+
+            document.addEventListener('mousedown', createRipple);
+            document.addEventListener('touchstart', createRipple, {passive: true});
+
+            // 5. Tech Particle Background Canvas
+            const canvas = document.getElementById('bg-canvas');
+            const ctx = canvas.getContext('2d');
+            let particles = [];
+
+            const resize = () => {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            };
+
+            window.addEventListener('resize', resize);
+            resize();
+
+            class Particle {
+                constructor() {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height;
+                    this.size = Math.random() * 1.5 + 0.5;
+                    this.speedX = Math.random() * 0.5 - 0.25;
+                    this.speedY = Math.random() * 0.5 - 0.25;
+                    this.opacity = Math.random() * 0.5 + 0.1;
+                    // Mix of blue and gold for particles
+                    this.color = Math.random() > 0.8 ? 'rgba(251, 191, 36, ' : 'rgba(96, 165, 250, ';
+                }
+
+                update() {
+                    this.x += this.speedX;
+                    this.y += this.speedY;
+
+                    if (this.x > canvas.width) this.x = 0;
+                    if (this.x < 0) this.x = canvas.width;
+                    if (this.y > canvas.height) this.y = 0;
+                    if (this.y < 0) this.y = canvas.height;
+                }
+
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fillStyle = this.color + this.opacity + ')';
+                    ctx.fill();
+                }
+            }
+
+            const initParticles = () => {
+                particles = [];
+                // Number of particles depends on screen width to avoid lag on mobile
+                const particleCount = Math.min(Math.floor(window.innerWidth / 10), 100);
+                for (let i = 0; i < particleCount; i++) {
+                    particles.push(new Particle());
+                }
+            };
+
+            const animateParticles = () => {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Draw connecting lines
+                ctx.lineWidth = 0.5;
+                for (let i = 0; i < particles.length; i++) {
+                    for (let j = i; j < particles.length; j++) {
+                        const dx = particles[i].x - particles[j].x;
+                        const dy = particles[i].y - particles[j].y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+
+                        if (distance < 120) {
+                            ctx.beginPath();
+                            ctx.strokeStyle = `rgba(59, 130, 246, ${0.1 - distance/1200})`;
+                            ctx.moveTo(particles[i].x, particles[i].y);
+                            ctx.lineTo(particles[j].x, particles[j].y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+
+                particles.forEach(p => {
+                    p.update();
+                    p.draw();
+                });
+
+                requestAnimationFrame(animateParticles);
+            };
+
+            initParticles();
+            animateParticles();
         });
     </script>
 </body>
