@@ -10,39 +10,86 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-        /* --- VARIABLES GLOBALES (Azul Marino y Dorado) --- */
+
+        /* --- VARIABLES GLOBALES (Azul Marino, Dorado y Neon) --- */
         :root {
-            --bg-navy-deep: #020b18; /* Azul marino ultra profundo */
-            --bg-navy-light: #061730; /* Azul marino para brillos */
-            --card-bg: rgba(6, 23, 48, 0.4);
-            --card-border: rgba(212, 175, 55, 0.15); /* Borde dorado sutil */
+            --bg-deep: #050a15;
+            --bg-glow: #0a1930;
+            --card-bg: rgba(20, 30, 55, 0.4);
+            --card-border: rgba(255, 255, 255, 0.08);
             --text-primary: #ffffff;
-            --text-secondary: #94a3b8;
+            --text-secondary: #a0aabf;
+            --accent-blue: #2b6cb0;
+            --accent-blue-light: #4299e1;
             --accent-gold: #D4AF37;
             --accent-gold-light: #FCEEBC;
-            --glow-gold: rgba(212, 175, 55, 0.15);
             --font-family: 'Inter', -apple-system, sans-serif;
             --ease: cubic-bezier(0.25, 1, 0.5, 1);
         }
 
-        /* --- RESET Y PREVENCIÓN DE SCROLL HORIZONTAL --- */
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        html { 
-            scroll-behavior: smooth; 
+        html, body {
             width: 100%;
-            overflow-x: hidden; /* Fundamental para evitar scroll lateral */
-        }
-
-        body {
-            background-color: var(--bg-navy-deep);
-            background-image: radial-gradient(circle at 50% 0%, var(--bg-navy-light) 0%, var(--bg-navy-deep) 70%);
+            overflow-x: hidden;
+            background-color: var(--bg-deep);
             color: var(--text-primary);
             font-family: var(--font-family);
             line-height: 1.5;
-            width: 100%;
-            overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
+            scroll-behavior: smooth;
+        }
+
+        /* Starry Background */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: -2;
+            background: radial-gradient(ellipse at bottom, var(--bg-glow) 0%, var(--bg-deep) 100%);
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image:
+                radial-gradient(1px 1px at 20px 30px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 40px 70px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 50px 160px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 90px 40px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 130px 80px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 160px 120px, #ffffff, rgba(0,0,0,0));
+            background-repeat: repeat;
+            background-size: 200px 200px;
+            opacity: 0.3;
+            animation: twinkle 5s infinite linear;
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0.2; }
+            50% { opacity: 0.5; }
+            100% { opacity: 0.2; }
+        }
+
+        /* Glowing Arch Effect */
+        .glow-arch {
+            position: fixed;
+            bottom: -20vh;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150vw;
+            height: 50vh;
+            border-radius: 50% 50% 0 0;
+            box-shadow: 0 -20px 100px 40px rgba(66, 153, 225, 0.4);
+            border-top: 2px solid rgba(255, 255, 255, 0.8);
+            z-index: -1;
+            opacity: 0.8;
+            pointer-events: none;
         }
 
         .container {
@@ -50,13 +97,21 @@
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 24px;
+            position: relative;
+            z-index: 10;
         }
 
         h1, h2, h3 { font-weight: 600; letter-spacing: -0.02em; }
         
-        /* Efecto Metálico para Texto */
         .gradient-gold {
             background: linear-gradient(135deg, var(--accent-gold-light) 0%, var(--accent-gold) 40%, #997A15 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .gradient-blue {
+            background: linear-gradient(135deg, #a0c4ff 0%, #4299e1 40%, #2b6cb0 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -80,15 +135,17 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, var(--accent-gold) 0%, #B38728 100%);
-            color: var(--bg-navy-deep);
-            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            box-shadow: 0 4px 15px rgba(66, 153, 225, 0.2);
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4);
-            color: #000;
+            background: rgba(255,255,255,0.1);
+            border-color: white;
+            box-shadow: 0 8px 25px rgba(66, 153, 225, 0.4);
         }
 
         .btn-outline {
@@ -100,11 +157,11 @@
 
         .btn-outline:hover { 
             background-color: rgba(255,255,255,0.05); 
-            border-color: var(--accent-gold); 
-            color: var(--accent-gold-light);
+            border-color: var(--accent-blue-light);
+            color: var(--accent-blue-light);
         }
 
-        /* --- NAVEGACIÓN INTELIGENTE --- */
+        /* --- NAVEGACIÓN --- */
         header {
             position: fixed;
             top: 0; left: 0; width: 100%;
@@ -118,7 +175,7 @@
         }
 
         header.scrolled {
-            background: rgba(2, 11, 24, 0.8);
+            background: rgba(5, 10, 21, 0.8);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border-bottom: 1px solid rgba(255,255,255,0.05);
@@ -132,7 +189,7 @@
         }
 
         .logo { font-size: 22px; font-weight: 700; color: #fff; text-decoration: none; letter-spacing: -0.5px;}
-        .logo span { color: var(--accent-gold); }
+        .logo span { color: var(--accent-blue-light); }
 
         /* --- HERO SECTION --- */
         .hero {
@@ -145,26 +202,10 @@
             padding-top: 70px;
         }
 
-        /* Brillo de fondo controlado para no hacer overflow */
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 80vw;
-            height: 80vw;
-            max-width: 800px;
-            max-height: 800px;
-            background: radial-gradient(circle, var(--glow-gold) 0%, transparent 60%);
-            z-index: -1;
-            pointer-events: none;
-        }
-
         .hero h1 { font-size: clamp(40px, 6vw, 76px); line-height: 1.05; margin-bottom: 24px; }
         .hero p { font-size: clamp(18px, 2vw, 24px); color: var(--text-secondary); max-width: 650px; margin: 0 auto 40px; }
         .hero-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
 
-        /* Indicador intuitivo de Scroll */
         .scroll-indicator {
             position: absolute;
             bottom: 40px;
@@ -180,17 +221,17 @@
 
         .scroll-indicator span { font-size: 12px; text-transform: uppercase; letter-spacing: 2px; color: var(--text-secondary); }
         .mouse { width: 24px; height: 36px; border: 2px solid var(--text-secondary); border-radius: 12px; position: relative; }
-        .wheel { width: 4px; height: 6px; background: var(--accent-gold); border-radius: 2px; position: absolute; top: 6px; left: 50%; transform: translateX(-50%); animation: scroll 1.5s infinite; }
+        .wheel { width: 4px; height: 6px; background: var(--accent-blue-light); border-radius: 2px; position: absolute; top: 6px; left: 50%; transform: translateX(-50%); animation: scroll 1.5s infinite; }
 
         @keyframes bounce { 0%, 20%, 50%, 80%, 100% { transform: translateY(0) translateX(-50%); } 40% { transform: translateY(-10px) translateX(-50%); } 60% { transform: translateY(-5px) translateX(-50%); } }
         @keyframes scroll { 0% { top: 6px; opacity: 1; } 100% { top: 18px; opacity: 0; } }
 
-        /* --- TARJETAS PREMIUM Y EFECTO GLOW INTELIGENTE --- */
+        /* --- MODERN TECH CARDS --- */
         .card {
-            background: var(--card-bg);
+            background: rgba(15, 23, 42, 0.6);
             border: 1px solid var(--card-border);
             border-radius: 24px;
-            padding: 40px;
+            padding: 32px;
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             transition: transform 0.4s var(--ease), border-color 0.4s var(--ease), box-shadow 0.4s var(--ease);
@@ -198,24 +239,67 @@
             overflow: hidden;
             opacity: 0;
             transform: translateY(30px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05);
+            display: flex;
+            flex-direction: column;
         }
 
         .card:hover {
             transform: translateY(-5px);
-            border-color: rgba(212, 175, 55, 0.5);
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            border-color: rgba(66, 153, 225, 0.3);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255,255,255,0.1);
         }
 
         .card::before {
-            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(212, 175, 55, 0.08), transparent 40%);
-            z-index: 0; pointer-events: none; opacity: 0; transition: opacity 0.4s;
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 60%;
+            background: radial-gradient(ellipse at bottom, rgba(66, 153, 225, 0.25) 0%, transparent 70%);
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.4s;
         }
+
         .card:hover::before { opacity: 1; }
         .card > * { position: relative; z-index: 1; }
 
+        .card-icon {
+            width: 48px; height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #4299e1, #2b6cb0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 15px rgba(66, 153, 225, 0.5);
+            color: white;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .card-icon svg { width: 24px; height: 24px; fill: none; stroke: white; stroke-width: 2; }
+
+        .bento-icon {
+            width: 48px; height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #4299e1, #2b6cb0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 15px rgba(66, 153, 225, 0.5);
+            color: white;
+            transition: transform 0.3s var(--ease);
+        }
+
+        .card:hover .bento-icon { transform: scale(1.1); }
+
+        .icon-svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
         /* --- SECCIONES COMUNES --- */
-        .section-padding { padding: 120px 0; }
+        .section-padding { padding: 120px 0; position: relative; z-index: 10; }
         .section-header { text-align: center; margin-bottom: 64px; }
         .section-header h2 { font-size: clamp(32px, 4vw, 48px); margin-bottom: 16px; }
         .section-header p { color: var(--text-secondary); font-size: 20px; max-width: 700px; margin: 0 auto; }
@@ -227,26 +311,10 @@
             gap: 24px;
         }
 
-        .bento-item { display: flex; flex-direction: column; justify-content: flex-start; min-height: 300px; }
-        .bento-item h3 { font-size: 26px; margin-bottom: 16px; color: #fff; }
-        .bento-item p { color: var(--text-secondary); font-size: 16px; line-height: 1.6; }
+        .bento-item { display: flex; flex-direction: column; justify-content: flex-start; min-height: 280px; }
+        .bento-item h3 { font-size: 22px; margin-bottom: 16px; color: #fff; font-weight: 600; }
+        .bento-item p { color: var(--text-secondary); font-size: 15px; line-height: 1.6; }
         
-        .bento-icon {
-            width: 56px; height: 56px;
-            background: rgba(212, 175, 55, 0.05);
-            border: 1px solid rgba(212, 175, 55, 0.2);
-            border-radius: 16px;
-            margin-bottom: 24px;
-            display: flex; align-items: center; justify-content: center;
-            color: var(--accent-gold);
-            transition: transform 0.3s var(--ease);
-        }
-
-        .card:hover .bento-icon { transform: scale(1.1) rotate(5deg); background: rgba(212, 175, 55, 0.1); }
-
-        /* Iconos SVG Inline para mayor velocidad y elegancia */
-        .icon-svg { width: 28px; height: 28px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
-
         /* --- SECCIÓN: ACRÓNIMO A.L.T.A --- */
         .acronym-layout {
             display: grid;
@@ -258,27 +326,30 @@
         .acronym-cards { display: flex; flex-direction: column; gap: 16px; }
         
         .acronym-card {
-            background: rgba(6, 23, 48, 0.6); 
-            border: 1px solid rgba(255,255,255,0.05);
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255,255,255,0.08);
             padding: 24px 32px; 
             border-radius: 20px; 
             display: flex; align-items: center; gap: 24px;
             transition: all 0.4s var(--ease);
+            backdrop-filter: blur(20px);
         }
         .acronym-card:hover { 
-            background: var(--card-bg); 
-            border-color: var(--accent-gold); 
+            background: rgba(20, 30, 55, 0.8);
+            border-color: rgba(66, 153, 225, 0.4);
             transform: translateX(15px); 
             box-shadow: -5px 5px 20px rgba(0,0,0,0.3);
         }
-        .acronym-letter { font-size: 40px; font-weight: 700; color: var(--accent-gold); text-shadow: 0 0 15px rgba(212, 175, 55, 0.3); }
-        .acronym-text { font-size: 22px; font-weight: 500; color: #fff;}
+        .acronym-letter { font-size: 32px; font-weight: 700; color: #fff; display: flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, #4299e1, #2b6cb0); box-shadow: 0 4px 15px rgba(66, 153, 225, 0.5); }
+        .acronym-text { font-size: 20px; font-weight: 500; color: #fff;}
 
         /* --- FOOTER --- */
         footer {
             border-top: 1px solid rgba(255,255,255,0.05);
             padding: 60px 0; text-align: center; color: var(--text-secondary);
-            background-color: #010710;
+            background-color: transparent;
+            position: relative;
+            z-index: 10;
         }
 
         /* --- RESPONSIVE MOBILE --- */
@@ -289,12 +360,47 @@
             .bento-grid { grid-template-columns: 1fr; }
             .acronym-layout { grid-template-columns: 1fr; gap: 40px; text-align: center; }
             .acronym-card { justify-content: center; }
-            .acronym-card:hover { transform: translateY(-5px); /* Movimiento vertical en móvil */ }
-            .scroll-indicator { display: none; /* Ocultar en móvil para ahorrar espacio */ }
+            .acronym-card:hover { transform: translateY(-5px); }
+            .scroll-indicator { display: none; }
         }
+
+        /* Wave Effect Styles */
+        .wave {
+            position: fixed; /* Use fixed so it stays relative to screen on scroll */
+            border-radius: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            pointer-events: none;
+            z-index: 9999;
+            box-shadow: inset 0 0 20px rgba(212, 175, 37, 0.8), 0 0 40px rgba(66, 153, 225, 0.8);
+            border: 2px solid rgba(212, 175, 55, 0.8);
+            animation: ripple 1.2s ease-out forwards;
+        }
+
+        .wave::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            border-radius: 50%;
+            box-shadow: inset 0 0 40px rgba(66, 153, 225, 0.5);
+            border: 1px solid rgba(66, 153, 225, 0.8);
+            animation: ripple-inner 1.2s ease-out forwards;
+        }
+
+        @keyframes ripple {
+            0% { width: 0; height: 0; opacity: 1; }
+            100% { width: 300px; height: 300px; opacity: 0; border-width: 0px; }
+        }
+
+        @keyframes ripple-inner {
+            0% { transform: scale(0.5); opacity: 1; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+
     </style>
 </head>
 <body>
+
+    <div class="glow-arch"></div>
 
     <header id="main-header">
         <div class="container" style="display: flex; justify-content: space-between; width: 100%;">
@@ -327,14 +433,23 @@
             </div>
             <div class="bento-grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
                 <div class="card reveal-card">
+                    <div class="card-icon">
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                    </div>
                     <h3 class="gradient-gold" style="font-size: 24px; margin-bottom: 12px;">Alta Tecnología</h3>
                     <p>Núcleo de Inteligencia Artificial predictiva que localiza productos ganadores y gestiona la operatividad de tu tienda 24/7 sin descanso.</p>
                 </div>
                 <div class="card reveal-card">
+                    <div class="card-icon">
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                    </div>
                     <h3 class="gradient-gold" style="font-size: 24px; margin-bottom: 12px;">Alta Costura</h3>
                     <p>Páginas de ventas diseñadas a medida por algoritmos. Estética visual premium y textos persuasivos orientados directamente a la conversión.</p>
                 </div>
                 <div class="card reveal-card">
+                    <div class="card-icon">
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                    </div>
                     <h3 class="gradient-gold" style="font-size: 24px; margin-bottom: 12px;">Alta Calidad</h3>
                     <p>Curaduría automatizada de proveedores de primer nivel y un sistema de atención post-venta diseñado para fidelizar a cada comprador.</p>
                 </div>
@@ -477,6 +592,27 @@
                     observer.observe(el);
                 }
             });
+
+
+        // Immersive Touch Interaction (Blue and Gold Wave)
+        document.addEventListener('pointerdown', function(e) {
+            // Ignore if clicking a button to not break links/actions entirely, but for immersive experience, maybe let it happen everywhere
+            if(e.target.closest('a') || e.target.closest('button')) {
+                // let it happen but don't prevent default
+            }
+
+            const wave = document.createElement('div');
+            wave.className = 'wave';
+
+            wave.style.left = e.clientX + 'px';
+            wave.style.top = e.clientY + 'px';
+
+            document.body.appendChild(wave);
+
+            setTimeout(() => {
+                wave.remove();
+            }, 1200);
+        });
 
             // 3. Efecto Glow Dinámico en Tarjetas (Rastreo del Ratón)
             document.querySelectorAll('.card').forEach(card => {
