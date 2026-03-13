@@ -7,7 +7,7 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
         :root {
@@ -21,6 +21,7 @@
             --accent-gold: #fbbf24;
             --accent-gold-glow: rgba(251, 191, 36, 0.5);
             --font-main: 'Inter', sans-serif;
+            --font-display: 'Syncopate', sans-serif;
         }
 
         * {
@@ -173,37 +174,205 @@
             background: rgba(255, 255, 255, 0.05);
         }
 
-        /* Hero */
-        .hero {
+        /* Chrome Hero */
+        .chrome-hero {
             position: relative;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            text-align: center;
+            overflow: hidden;
             padding-top: 80px;
+            perspective: 1000px;
         }
 
-        .hero h1 {
-            font-size: clamp(40px, 6vw, 76px);
-            line-height: 1.1;
-            margin-bottom: 24px;
-            text-shadow: 0 0 40px rgba(59, 130, 246, 0.3);
+        /* Large Background Text */
+        .hero-bg-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: clamp(60px, 15vw, 250px);
+            letter-spacing: 0.1em;
+            color: transparent;
+            -webkit-text-stroke: 2px rgba(255, 255, 255, 0.4);
+            z-index: 1;
+            white-space: nowrap;
+            pointer-events: none;
+            transition: transform 0.1s ease-out;
         }
 
-        .hero p {
-            font-size: clamp(16px, 2vw, 20px);
+        /* Hero Text Content (Top Left) */
+        .hero-top-left {
+            position: absolute;
+            top: 15vh;
+            left: 5vw;
+            z-index: 3;
+            max-width: 500px;
+            text-align: left;
+        }
+
+        .hero-tag {
+            display: inline-block;
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
             color: var(--text-muted);
-            max-width: 600px;
-            margin: 0 auto 40px;
-            line-height: 1.6;
+            margin-bottom: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .hero-buttons {
+        .hero-top-left h1 {
+            font-size: clamp(32px, 5vw, 64px);
+            line-height: 1.1;
+            font-weight: 300;
+            color: #fff;
+            margin-bottom: 16px;
+        }
+
+        /* Hero Description (Bottom Right) */
+        .hero-bottom-right {
+            position: absolute;
+            bottom: 15vh;
+            right: 5vw;
+            z-index: 3;
+            max-width: 400px;
+            text-align: left;
+        }
+
+        .hero-bottom-right p {
+            font-size: clamp(14px, 1.5vw, 16px);
+            line-height: 1.6;
+            color: var(--text-muted);
+            margin-bottom: 32px;
+        }
+
+        /* Chrome Object Container */
+        .chrome-orb-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: clamp(250px, 40vw, 600px);
+            height: clamp(250px, 40vw, 600px);
+            z-index: 2;
+            transition: transform 0.1s ease-out;
+        }
+
+        /* Chrome Object CSS Art - Improved for more organic "rock" shape */
+        .chrome-orb {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            background: radial-gradient(
+                circle at 40% 30%,
+                rgba(255, 255, 255, 0.9) 0%,
+                rgba(200, 200, 200, 0.8) 15%,
+                rgba(80, 80, 80, 0.9) 40%,
+                rgba(10, 10, 10, 1) 70%,
+                rgba(20, 20, 20, 0.95) 100%
+            );
+            /* More complex, sharp and angular border radius to mimic the faceted chrome rock */
+            border-radius: 61% 39% 49% 51% / 46% 36% 64% 54%;
+            box-shadow:
+                inset -30px -30px 60px rgba(0,0,0,0.9),
+                inset 30px 30px 50px rgba(255,255,255,0.5),
+                inset -10px 10px 20px rgba(255,255,255,0.2),
+                0 30px 60px rgba(0,0,0,0.8),
+                0 0 120px rgba(251, 191, 36, 0.15);
+            animation: morphOrb 12s ease-in-out infinite alternate, floatOrb 6s ease-in-out infinite;
+            overflow: hidden;
             display: flex;
-            gap: 16px;
+            align-items: center;
             justify-content: center;
-            flex-wrap: wrap;
+
+            /* Adding inner jagged lines using clipping and gradients */
+            clip-path: polygon(
+                20% 0%, 80% 5%, 100% 30%, 95% 70%, 75% 100%,
+                30% 95%, 0% 70%, 5% 30%
+            );
+            transition: clip-path 5s ease-in-out;
+        }
+
+        /* Inner Glow for Chrome Orb - Much brighter and centralized */
+        .chrome-orb::before {
+            content: '';
+            position: absolute;
+            width: 45%;
+            height: 55%;
+            background: radial-gradient(ellipse at center, #fff 0%, #fde047 20%, #ea580c 50%, #991b1b 80%, transparent 100%);
+            mix-blend-mode: screen;
+            filter: blur(15px);
+            animation: pulseCore 3s ease-in-out infinite alternate;
+            z-index: 1;
+        }
+
+        /* Chrome Reflections - Sharper angular reflections */
+        .chrome-reflection {
+            position: absolute;
+            width: 150%;
+            height: 150%;
+            top: -25%;
+            left: -25%;
+            background:
+                linear-gradient(110deg, transparent 20%, rgba(255,255,255,0.9) 25%, transparent 30%, transparent 40%, rgba(255,255,255,0.4) 45%, transparent 50%),
+                linear-gradient(15deg, transparent 40%, rgba(255,255,255,0.5) 45%, transparent 55%),
+                radial-gradient(ellipse at 70% 30%, rgba(255,255,255,0.8) 0%, transparent 30%);
+            mix-blend-mode: color-dodge;
+            animation: spinReflection 25s linear infinite;
+            z-index: 2;
+        }
+
+        /* Additional angular facet details */
+        .chrome-orb::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background:
+                linear-gradient(45deg, transparent 40%, rgba(0,0,0,0.8) 45%, transparent 50%),
+                linear-gradient(-45deg, transparent 30%, rgba(255,255,255,0.6) 35%, transparent 40%);
+            mix-blend-mode: overlay;
+            z-index: 3;
+            pointer-events: none;
+        }
+
+        @keyframes morphOrb {
+            0% {
+                clip-path: polygon(20% 0%, 80% 5%, 100% 30%, 95% 70%, 75% 100%, 30% 95%, 0% 70%, 5% 30%);
+            }
+            33% {
+                clip-path: polygon(15% 5%, 85% 0%, 95% 25%, 100% 75%, 70% 95%, 25% 100%, 5% 65%, 0% 35%);
+            }
+            66% {
+                clip-path: polygon(25% 0%, 75% 10%, 100% 35%, 90% 75%, 80% 100%, 20% 90%, 0% 60%, 10% 25%);
+            }
+            100% {
+                clip-path: polygon(20% 0%, 80% 5%, 100% 30%, 95% 70%, 75% 100%, 30% 95%, 0% 70%, 5% 30%);
+            }
+        }
+
+        @keyframes floatOrb {
+            0% { transform: translateY(0px) rotate(0deg) scale(1); }
+            50% { transform: translateY(-20px) rotate(3deg) scale(1.02); }
+            100% { transform: translateY(0px) rotate(0deg) scale(1); }
+        }
+
+        @keyframes pulseCore {
+            0% { transform: scale(0.9); opacity: 0.8; }
+            100% { transform: scale(1.3); opacity: 1; filter: blur(20px) brightness(1.2); }
+        }
+
+        @keyframes spinReflection {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         /* Cards - Modern Tech Design */
@@ -491,8 +660,47 @@
             .section-padding { padding: 80px 0; }
             .bento-grid.cols-2 { grid-template-columns: 1fr; }
             .acronym-layout { grid-template-columns: 1fr; gap: 40px; }
-            .hero-buttons { flex-direction: column; width: 100%; }
-            .hero-buttons .btn { width: 100%; }
+
+            /* Adjust modern hero for mobile */
+            .chrome-hero {
+                flex-direction: column;
+                justify-content: space-between;
+                padding: 120px 24px 60px;
+            }
+
+            .hero-top-left {
+                position: relative;
+                top: 0; left: 0;
+                text-align: center;
+                margin-bottom: 40px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .hero-bottom-right {
+                position: relative;
+                bottom: 0; right: 0;
+                text-align: center;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .chrome-orb-container {
+                position: relative;
+                top: 0; left: 0;
+                transform: none !important; /* Disable scroll translate on mobile */
+                margin: 40px auto;
+                width: 250px;
+                height: 250px;
+            }
+
+            .hero-bg-text {
+                font-size: 80px;
+                top: 45%;
+            }
+
             .scroll-indicator { display: none; }
         }
     </style>
@@ -510,16 +718,32 @@
         </div>
     </header>
 
-    <section class="hero">
-        <div class="container">
-            <h1 class="reveal-item">Tu marca privada.<br><span class="gradient-gold">En piloto automático.</span></h1>
-            <p class="reveal-item" style="transition-delay: 100ms;">El ecosistema de IA que predice, diseña, vende y automatiza tu negocio de e-commerce. Desde Colombia para el mundo.</p>
-            <div class="hero-buttons reveal-item" style="transition-delay: 200ms;">
-                <a href="#ecosistema" class="btn btn-primary">Descubrir el Ecosistema</a>
-                <a href="#filosofia" class="btn btn-outline">Ver Metodología</a>
+    <section class="chrome-hero">
+        <!-- Huge background text -->
+        <div class="hero-bg-text" id="heroBgText">ALTA57</div>
+
+        <!-- Top Left Text Content -->
+        <div class="hero-top-left reveal-item">
+            <div class="hero-tag">Herramientas del futuro</div>
+            <h1>Trabaja inteligente,<br>escala más rápido</h1>
+        </div>
+
+        <!-- 3D Chrome Orb with Fire Inner Core -->
+        <div class="chrome-orb-container" id="chromeOrbContainer">
+            <div class="chrome-orb">
+                <div class="chrome-reflection"></div>
             </div>
         </div>
         
+        <!-- Bottom Right Description & CTA -->
+        <div class="hero-bottom-right reveal-item" style="transition-delay: 200ms;">
+            <p>Redefine la forma en que trabajas con un ecosistema web impulsado por IA. Diseñado para la velocidad, claridad y los desafíos del mañana.</p>
+            <a href="#ecosistema" class="btn btn-primary gold-accent" style="display: inline-flex; gap: 8px;">
+                Descubrir Ahora
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+        </div>
+
         <div class="scroll-indicator reveal-item" style="transition-delay: 400ms;">
             <div class="mouse"><div class="wheel"></div></div>
             <span style="font-size: 11px; letter-spacing: 2px; text-transform: uppercase;">Explorar</span>
@@ -663,11 +887,31 @@
             
             // 1. Header background on scroll
             const header = document.getElementById('main-header');
+            const bgText = document.getElementById('heroBgText');
+            const orbContainer = document.getElementById('chromeOrbContainer');
+
             window.addEventListener('scroll', () => {
-                if (window.scrollY > 50) {
+                const scrollY = window.scrollY;
+
+                // Header background
+                if (scrollY > 50) {
                     header.classList.add('scrolled');
                 } else {
                     header.classList.remove('scrolled');
+                }
+
+                // Hero Scroll Reactions (Parallax & 3D rotation)
+                if (scrollY < window.innerHeight) {
+                    // Parallax for huge text
+                    if (bgText) {
+                        bgText.style.transform = `translate(-50%, calc(-50% + ${scrollY * 0.5}px))`;
+                    }
+
+                    // 3D Rotation and parallax for Chrome Orb
+                    if (orbContainer && window.innerWidth > 768) {
+                        // Move up slightly while rotating
+                        orbContainer.style.transform = `translate(-50%, calc(-50% + ${scrollY * -0.2}px)) rotateY(${scrollY * 0.1}deg) rotateX(${scrollY * 0.05}deg)`;
+                    }
                 }
             });
 
